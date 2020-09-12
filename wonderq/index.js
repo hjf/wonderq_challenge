@@ -28,21 +28,28 @@ function enqueue(payload) {
  * @return {any} An object with the ID of the element, and the payload. Null if the queue is empty
  */
 function dequeue() {
-    let element_id = queue.shift(); //gets the first available element
+    while (true) {
+        let element_id = queue.shift(); //gets the first available element
 
-    if (element_id === undefined) //if the queue is empty, this is undefined
-        return null
+        if (element_id === undefined) //if the queue is empty, this is undefined
+            return null
 
-    let element = queue_elements[element_id];
-    setTimeout(() => {
-        if (queue_elements[element_id] !== undefined)
-            queue.unshift(element_id) //Add the element at the head of the array, to reprocess ASAP
-    }, MESSAGE_TIMEOUT);
+        let element = queue_elements[element_id]; //we grab the element from the queue
 
-    return {
-        "element_id": element_id,
-        "payload": element
-    };
+        //a race condition happened: a client notified "done" just as the timeout finished
+        if (element === undefined)
+            continue; //keep looping until we find something, or the queue is full
+
+        setTimeout(() => {
+            if (queue_elements[element_id] !== undefined)
+                queue.unshift(element_id) //Add the element at the head of the array, to reprocess ASAP
+        }, MESSAGE_TIMEOUT);
+
+        return {
+            "element_id": element_id,
+            "payload": element
+        };
+    }
 }
 
 /**

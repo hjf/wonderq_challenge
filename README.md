@@ -60,5 +60,7 @@ This solution is by no means useless. It will perform decently, and it's very ea
 
  ## Configuration
 
- The only available configuration parameter is ``MESSAGE_TIMEOUT``, which specifies how long the queue will wait for the call to ``notifyDone`` after a client called ``dequeue``. After this period, the element will be added back to the queue. The default value, if not specified, is 10 seconds. It can be configured by the environment variable ``MESSAGE_TIMEOUT``.
+ There are two configuration parameters, set by environment variables:
+  -  ``MESSAGE_TIMEOUT``, which specifies how long the queue will wait for the call to ``notifyDone`` after a client called ``dequeue``. After this period, the element will be added back to the queue. The default value, if not specified, is 10 seconds. It can be configured by the environment variable ``MESSAGE_TIMEOUT``.
+  - ``LOGGING_LEVEL``, specifies the level of logging. Logging is always sent to the console. Valid options for this settings are ``info`` (the default logging level) and ``debug`` which will show every call to the queue functions.
  

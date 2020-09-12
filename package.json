@@ -6,8 +6,8 @@
   "scripts": {
     "test": "jest"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Hernán Freschi",
+  "license": "MIT",
   "dependencies": {
     "eslint-plugin-jest": "^24.0.0",
     "express": "^4.17.1",

@@ -1,6 +1,6 @@
 # This is the WonderQ simple queue.
 
-This is an implementation of a very simple message queue. It has only 3 commands:
+This is an implementation of a very simple polling message queue. It has only 3 commands:
 
  - **Enqueue:** Puts a new element in the queue.
  - **Dequeue:** Returns the first available element from the queue.
@@ -14,6 +14,8 @@ Being a very basic queue, it has several limitations:
  - **JSON only:** The data is delivered in the JSON format both ways. If binary data is required, it will need to be encoded to JSON first (for example, with base64).
  - **No multi-fanout:** All queued messages can be consumed by a single consumer. Unless there is an error, a message will always be delivered to a single consumer. There is no way to specify that multiple copies of a message should be delivered.
  - **No message types:** There is no message typing, and a consumer will always get the first available message. A consumer can't pick the type of message it wants to consume, nor the queue can decide which specific message (other than the last one in the queue) to send to which consumer.
+ - **No tracking of consumers:** Once a message is handed over to a consumer, any client may call the ``notifyDone`` method and remove the element from the queue. This isn't a concern as the services uses UUIDv4 identifiers and it will be *impossible* for an attacker to guess elements from the queue. And also, because the queue has no authorization mechanism, anyone can ``dequeue`` and ``notifyDone`` as much as they want, and empty the queue anyways...
+ - **No long-lived HTTP connections:** If there are no elements in the queue, it will instantly return an HTTP 204 message to any client requesting a message. There is no way of keeping a connection open to wait for new messages. 
 
 ## Design considerations
 
@@ -27,6 +29,8 @@ The server runs in a single CPU core. While it is possible to fire up multiple E
 
 Using a dedicated queuing system would allow for much greater flexibility. Some queuing systems offer guaranteed data delivery, and can even deliver different types of messages to different clients. Features such as group delivery, QoS, partitioning, data type flexibility and much more, will be better suited by other solutions.
 
+Lastly, since this is a **polling** queue, it's almost *by definition* not really designed to be an high-performance solution. Having hundreds of consumers constantly polling the queue for more work will significantly degrade performance. A workaround for this would be to implement WebSocket-based communication for the queue, following the pub-sub pattern. This would certainly increase performance in an environment where there are potentially thousands of consumers, to avoid polling. This kind of solution should be relatively easy to add to the HTTP API.
+
 ### Who is this product for, then?
 
 This solution is by no means useless. It will perform decently, and it's very easy to integrate. As Docker service, it can be ready in seconds. No configuration is needed *because the queue itself provides none*. Under the design considerations and assumptions, this service, as limited as it is, will be *good enough* for most users.
@@ -35,3 +39,12 @@ This solution is by no means useless. It will perform decently, and it's very ea
 
  - Add memory limits
  - Add authentication/authorization: a JWT token could be used to protect the API endpoints.
+ - Add queue aging and expiring of old elements
+
+ ## API Reference
+
+ The service is exposed as an HTTP API. There are 3 API endpoints:
+
+  - **/enqueue**, expects an HTTP POST request with a JSON body with the payload to insert. Returns a JSON body with an object containing the property ``element_id``, with the UUIDv4 ID of the inserted message.
+  - **/dequeue**, expects an HTTP GET request with no parameters. If there are available elements, it will return a JSON body with an object with the properties ``element_id`` and ``payload``. If there are no elements in the queue, it will return HTTP 204.
+  - **/notifyDone**, expects an HTTP GET request with a ``element_id`` parameter with the ID of the message that was processed

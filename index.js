@@ -1,41 +1,74 @@
 'use strict'
-
+/** HTTP API for WonderQ
+ * @module WonderqAPI
+ * @requires express
+ */
 const wonderq = require('./wonderq')
+
+/**
+ * express module
+ * @const
+ */
 const express = require('express')
 const app = express()
 const port = 3000
 
-//we use JSON to pass data around
-app.use(express.json());
+// we use JSON to pass data around
+app.use(express.json())
 
+/**
+ * Gets an element from the queue
+ * @name get/dequeue
+ * @function
+ * @memberof module:WonderqAPI
+ * @inner
+ * @return {http} JSON object containing the element ID, and the payload. HTTP 204 if the queue is empty.
+ */
 app.get('/dequeue', async (req, res) => {
-    let element = wonderq.dequeue();
-    if (element == null) {
-        res.status(204).send()
-        return
-    }
-    res.json(element)
+  const element = wonderq.dequeue()
+  if (element == null) {
+    res.status(204).send()
+    return
+  }
+  res.json(element)
 })
 
+/**
+ * Puts an element from the queue
+ * @name get/enqueue
+ * @function
+ * @memberof module:WonderqAPI
+ * @inner
+ * @param {json} all The JSON payload to insert.
+ * @return {http} JSON object containing the element ID.
+ */
 app.post('/enqueue', async (req, res) => {
-    let element_id = wonderq.enqueue(req.body);
-    res.json({ "element_id": element_id })
+  const elementId = wonderq.enqueue(req.body)
+  res.json({ element_id: elementId })
 })
 
+/**
+ * Notifies the queue that the consumer has finished processing a previously requested message
+ * @name get/notifyDone
+ * @function
+ * @memberof module:WonderqAPI
+ * @inner
+ * @param {string} element_id The ID of the element that was processed.
+ * @return {http} HTTP 204 if the request was successful, or HTTP 404 if the element wasn't found in the queue.
+ */
 app.get('/notifyDone', async (req, res) => {
-    let element_id = req.query["element_id"];
-    if (element_id === undefined) {
-        res.status(400).send("Bad request.")
-    }
+  const elementId = req.query.element_id
+  if (elementId === undefined) {
+    res.status(400).send('Bad request.')
+  }
 
-    if (wonderq.notifyDone(element_id)) {
-        res.status(204).send()
-    } else {
-        res.status(404).send("No such element in the queue.")
-    }
-
+  if (wonderq.notifyDone(elementId)) {
+    res.status(204).send()
+  } else {
+    res.status(404).send('No such element in the queue.')
+  }
 })
 
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
+  console.log(`Example app listening at http://localhost:${port}`)
 })

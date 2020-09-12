@@ -54,9 +54,9 @@ This solution is by no means useless. It will perform decently, and it's very ea
 
 ## TODO
 
- - Add memory limits
- - Add authentication/authorization: a JWT token could be used to protect the API endpoints.
- - Add queue aging and expiring of old elements
+ - Add memory limits ([Issue #4](/../../issues/4))
+ - Add authentication/authorization: a JWT token could be used to protect the API endpoints. ([Issue #6](/../../issues/6))
+ - Add queue aging and expiring of old elements ([Issue #5](/../../issues/5))
 
  ## Configuration
 

@@ -39,10 +39,11 @@ function dequeue () {
 
     const element = queueElements[elementId] // we grab the element from the queue
 
-    // a race condition happened: a client notified "done" just as the timeout finished
-    if (element === undefined) {
-      continue // keep looping until we find something, or the queue is full
-    }
+    // On a second thought, this can't really happen as configured. Node is single threaded.
+    // // a race condition happened: a client notified "done" just as the timeout finished
+    // if (element === undefined) {
+    //   continue // keep looping until we find something, or the queue is full
+    // }
 
     setTimeout(() => {
       if (queueElements[elementId] !== undefined) {

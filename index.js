@@ -26,7 +26,7 @@ app.use(express.json())
  */
 app.get('/dequeue', async (req, res) => {
   const element = wonderq.dequeue()
-  if (element == null) {
+  if (element === null) {
     res.status(204).send()
     return
   }

@@ -24,6 +24,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: eslint . --ext .js,.jsx,.ts,.tsx
     - run: npm ci
+    - run: npx eslint .
     - run: npm test

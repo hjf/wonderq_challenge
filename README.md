@@ -1,6 +1,11 @@
 # This is the WonderQ simple queue.
 
 [![Actions Status](https://github.com/hjf/wonderq_challenge/workflows/Node.js%20CI/badge.svg)](https://github.com/hjf/wonderq_challenge/actions)
+[![Actions Status](https://github.com/hjf/wonderq_challenge/workflows/Publish%20Docker%20image/badge.svg)](https://github.com/hjf/wonderq_challenge/actions)
+![GitHub](https://img.shields.io/github/license/hjf/wonderq_challenge)
+![GitHub issues](https://img.shields.io/github/issues/hjf/wonderq_challenge)
+![GitHub top language](https://img.shields.io/github/languages/top/hjf/wonderq_challenge)
+![Docker Image Version (latest semver)](https://img.shields.io/docker/v/hjf2020/wonderq)
 
  ## TLDR; API Reference
 

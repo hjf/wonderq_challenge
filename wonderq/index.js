@@ -4,8 +4,8 @@
  */
 const { v4: uuidv4 } = require('uuid')
 
-// The default message timeout
-const MESSAGE_TIMEOUT = 10000
+// The message timeout. If not defined, defaults to 10 seconds
+const MESSAGE_TIMEOUT = process.env.DEFAULT_MESSAGE_TIMEOUT || 10000
 
 // Our queue, actually only holds "pointers" to the actual data
 var queue = []

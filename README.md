@@ -2,6 +2,16 @@
 
 [![Actions Status](https://github.com/hjf/wonderq_challenge/workflows/Node.js%20CI/badge.svg)](https://github.com/hjf/wonderq_challenge/actions)
 
+ ## TLDR; API Reference
+
+ The service is exposed as an HTTP API. There are 3 API endpoints:
+
+  - **/enqueue**, expects an HTTP POST request with a JSON body with the payload to insert. Returns a JSON body with an object containing the property ``element_id``, with the UUIDv4 ID of the inserted message.
+  - **/dequeue**, expects an HTTP GET request with no parameters. If there are available elements, it will return a JSON body with an object with the properties ``element_id`` and ``payload``. If there are no elements in the queue, it will return HTTP 204. The client has, by default, 10 seconds to process the message until it's added back to the queue.
+  - **/notifyDone**, expects an HTTP GET request with a ``element_id`` parameter with the ID of the message that was processed. Will return HTTP 204 if the element was successfully removed from the queue, or HTTP 404 if the element was not found. This can be due to two reasons: either the element was never in the queue to begin with, or the consumer took longer than the configured timeout and was delivered to (and processed by) another consumer. It's up to the business logic of the application to decide what to if this happens.
+
+## Project description
+
 This is an implementation of a very simple polling message queue. It has only 3 commands:
 
  - **Enqueue:** Puts a new element in the queue.
@@ -46,11 +56,4 @@ This solution is by no means useless. It will perform decently, and it's very ea
  ## Configuration
 
  The only available configuration parameter is ``MESSAGE_TIMEOUT``, which specifies how long the queue will wait for the call to ``notifyDone`` after a client called ``dequeue``. After this period, the element will be added back to the queue. The default value, if not specified, is 10 seconds. It can be configured by the environment variable ``MESSAGE_TIMEOUT``.
-
- ## API Reference
-
- The service is exposed as an HTTP API. There are 3 API endpoints:
-
-  - **/enqueue**, expects an HTTP POST request with a JSON body with the payload to insert. Returns a JSON body with an object containing the property ``element_id``, with the UUIDv4 ID of the inserted message.
-  - **/dequeue**, expects an HTTP GET request with no parameters. If there are available elements, it will return a JSON body with an object with the properties ``element_id`` and ``payload``. If there are no elements in the queue, it will return HTTP 204. The client has, by default, 10 seconds to process the message until it's added back to the queue.
-  - **/notifyDone**, expects an HTTP GET request with a ``element_id`` parameter with the ID of the message that was processed. Will return HTTP 204 if the element was successfully removed from the queue, or HTTP 404 if the element was not found. This can be due to two reasons: either the element was never in the queue to begin with, or the consumer took longer than the configured timeout and was delivered to (and processed by) another consumer. It's up to the business logic of the application to decide what to if this happens.
+ 

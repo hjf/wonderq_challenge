@@ -1,5 +1,7 @@
 # This is the WonderQ simple queue.
 
+[![Actions Status](https://github.com/hjf/wonderq_challenge/workflows/Node.js%20CI/badge.svg)](https://github.com/hjf/wonderq_challenge/actions)
+
 This is an implementation of a very simple polling message queue. It has only 3 commands:
 
  - **Enqueue:** Puts a new element in the queue.

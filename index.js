@@ -4,7 +4,19 @@
  * @requires express
  */
 const wonderq = require('./wonderq')
+const winston = require('winston')
 
+const LOGGING_LEVEL = process.env.LOGGING_LEVEL || 'info'
+
+const logger = winston.createLogger({
+  level: LOGGING_LEVEL,
+  format: winston.format.json(),
+  defaultMeta: { service: 'http-api' },
+  transports: [
+    new winston.transports.Console({
+      format: winston.format.simple()
+    })]
+})
 /**
  * express module
  * @const
@@ -71,5 +83,5 @@ app.get('/notifyDone', async (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  logger.info(`WonderQ HTTP API Listening at http://localhost:${port}`)
 })

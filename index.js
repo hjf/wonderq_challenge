@@ -60,6 +60,7 @@ app.get('/notifyDone', async (req, res) => {
   const elementId = req.query.element_id
   if (elementId === undefined) {
     res.status(400).send('Bad request.')
+    return
   }
 
   if (wonderq.notifyDone(elementId)) {

@@ -1,0 +1,21 @@
+config:
+  target: "http://localhost:3000"
+  http:
+      timeout: 10
+  phases:
+    - duration: 600
+      arrivalRate: 1000
+
+scenarios:
+  - flow:
+    - post:
+        url: "/enqueue"
+        json:
+          data: n874f9w0e7we89f789rew789rewf789fnm
+    - get:
+        url: "/dequeue"
+        capture:
+          json: "$.element_id"
+          as: "id"
+    - get:
+        url: "/notifyDone?element_id={{ id }}"

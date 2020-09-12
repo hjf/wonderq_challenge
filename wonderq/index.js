@@ -1,5 +1,7 @@
 'use strict'
-
+/** WonderQ Queing Module
+ * @module Wonderq
+ */
 const { v4: uuidv4 } = require('uuid')
 
 // The default message timeout
